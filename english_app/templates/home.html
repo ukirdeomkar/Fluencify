@@ -8,6 +8,13 @@
 </a> {% endcomment %}
 <button type="button" class="btn btn-success">Check Fluency</button>
 
+<div>
+  <p>Matched User : {{best_user}}</p>
+  <p>Matched With : {{matched_percentage}}%</p>
+  <p>Matched Interest : {{common_interest}}</p>
+</div>
+
+
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
   Update Interest
@@ -42,3 +49,4 @@
   </div>
 </div>
 {% endblock content %}
+

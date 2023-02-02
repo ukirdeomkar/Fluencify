@@ -93,17 +93,13 @@ def findparthner(request):
     best_user = -1
     commom_interest = set()
     isFound = False
-    same_level_user = addtionalInfoModel.objects.filter(fluency=user_fluency)
-    same_level_user_id = []
-    user = User.objects.all()
+    user = addtionalInfoModel.objects.filter(fluency=user_fluency)
     print(user)
     for u in user:
-        # print(u.id)
-        u_addtional_info = addtionalInfoModel.objects.get(userid=u.id)
-        if user_id == u.id or user_fluency < u_addtional_info.fluency:
+        if user_id == u.userid.id or user_fluency < u.fluency:
             continue
         score = 0
-        u_interest = set(u_addtional_info.interest.split(','))
+        u_interest = set(u.interest.split(','))
         # print(u_interest)
         matched = user_interest.intersection(u_interest)
         # print(matched)
@@ -111,7 +107,7 @@ def findparthner(request):
         print(f"user {u.id} matched {score}%")
         print(u_interest,user_interest)
         if max_score < score:
-            best_user = u.id
+            best_user = u.userid
             max_score = score
             commom_interest = matched
             if max_score >= 50:
@@ -119,6 +115,13 @@ def findparthner(request):
         if isFound:
             break
     print(best_user,max_score,commom_interest)
-    return redirect('https://www.wikipedia.com')
+
+    context = {}
+    current_interest = addtionalInfoModel.objects.get(userid=request.user.id).interest
+    context['current_interest'] = current_interest
+    context['best_user'] = best_user
+    context['matched_percentage'] = round(max_score,2)
+    context['common_interest'] = commom_interest
+    return render(request,'home.html',context)
 
 
