@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html >
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+  <meta charset="UTF-8">
+  <title>ML API</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  
+</head>
+
+<body>
+ <div class="login">
+	<h1>Flower Class Prediction</h1>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict')}}"method="post">
+    	<!-- <input type="text" name="0" default="0" required="required" /> -->
+    	<input type="text" name="1" required="required" />
+    	<input type="text" name="2" required="required" />
+    	<input type="text" name="3" required="required" />
+    	<input type="text" name="4" required="required" />
+    	<input type="text" name="5" required="required" />
+    	<input type="text" name="6" required="required" />
+    	<input type="text" name="7" required="required" />
+    	<input type="text" name="8" required="required" />
+    	<input type="text" name="9" required="required" />
+    	<input type="text" name="10" required="required" />
+    	<input type="text" name="11" required="required" />
+    	<input type="text" name="12" required="required" />
+    	<input type="text" name="13" required="required" />
+    	<input type="text" name="14" required="required" />
+    	<input type="text" name="15" required="required" />
+    	<input type="text" name="16" required="required" />
+    	<input type="text" name="17" required="required" />
+    	<input type="text" name="18" required="required" />
+    	<input type="text" name="19" required="required" />
+    	<input type="text" name="20" required="required" />
+    	<input type="text" name="21" required="required" />
+    	<input type="text" name="22" required="required" />
+    	<input type="text" name="23" required="required" />
+
+
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+
+   <br>
+   <br>
+   {{ prediction_text }}
+
+ </div>
+
+
+</body>
+</html>
