@@ -26,7 +26,7 @@ def predict():
     # print(features)
     prediction = model.predict(float_features)
     # i = np.argmax(prediction[0])
-    return render_template("index.html", prediction_text = "The Fluency Level is {}".format(i+1))
+    return render_template("index.html", prediction_text = "The Fluency Level is {}".format(int(i)+1))
 
 if __name__ == "__main__":
     flask_app.run(debug=True)
