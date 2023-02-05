@@ -11,7 +11,7 @@ import nltk
 # nltk.download('wordnet')
 # nltk.download('omw-1.4')
 from nltk.stem import PorterStemmer
-
+from fuzzywuzzy.fuzz import token_set_ratio
 
 def steminize(interest_str):
     ps = PorterStemmer()
@@ -83,7 +83,53 @@ def update(request):
         addtionalInfoModel.objects.filter(userid=request.user).update(interest=updated_interest)
     return redirect(home)
 
+
+def getMatch(user1,target_fluency):
+    user1_interest = user1.interest
+    print(user1_interest)
+    user_list = addtionalInfoModel.objects.filter(fluency=target_fluency)
+    user2 = None 
+    
+    max_matched_user = None
+    max_matched_percentage = 0
+
+    for user in user_list:
+        user2_interest = user.interest
+        matched_interest_count = 0
+        for interest1 in user1_interest:
+            for interest2 in user2_interest.split(','):
+                if token_set_ratio(interest1,interest2) > 80:
+                    print(interest1,interest2)
+                    matched_interest_count += 1
+        matched_interest_percentage = (matched_interest_count/len(user1_interest))*100
+        print(user,matched_interest_percentage)
+        if matched_interest_percentage > max_matched_percentage:
+            max_matched_percentage = matched_interest_percentage
+            max_matched_user = user
+        if matched_interest_percentage > 50:
+            return user.userid,matched_interest_percentage
+    return max_matched_user.userid,max_matched_percentage
+        
+
+
+
 def findparthner(request):
+    user1 = addtionalInfoModel.objects.get(userid=request.user.id)
+    
+
+    target_fluency = user1.fluency
+    user2,matched_percentage = getMatch(user1,target_fluency)
+
+    context = {}
+    context['current_interest'] = user1.interest
+    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2).interest
+    context['matched_user'] = user2
+    context['matched_percentage'] = round(matched_percentage,2)
+    # context['common_interest'] = commom_interest
+    return render(request,'home.html',context)
+
+
+def findparthner2(request):
     # import pdb;pdb.set_trace()
     user_id = request.user.id
     user_additional_info = addtionalInfoModel.objects.get(userid=user_id)
@@ -118,6 +164,7 @@ def findparthner(request):
 
     context = {}
     current_interest = addtionalInfoModel.objects.get(userid=request.user.id).interest
+    context['user_fluency'] = user_fluency
     context['current_interest'] = current_interest
     context['best_user'] = best_user
     context['matched_percentage'] = round(max_score,2)

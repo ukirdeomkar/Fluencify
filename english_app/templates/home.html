@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block fluency %}
+Your fluency : {{user_fluency}}
+{% endblock fluency %}
+
 {% block content %}
 
 <a type="button" class="btn btn-success" href={% url 'findparthner' %}>Find Parthner</a>
