@@ -84,38 +84,6 @@ def update(request):
         addtionalInfoModel.objects.filter(userid=request.user).update(interest=updated_interest)
     return redirect(home)
 
-
-def getMatch(user1_id,target_fluency):
-    import pdb;pdb.set_trace()
-    user1 = addtionalInfoModel.objects.get(userid=user1_id)
-    user1_interest = user1.interest
-    print(user1_interest)
-    user_list = addtionalInfoModel.objects.filter(fluency=target_fluency)
-    user2 = None 
-    
-    max_matched_user = None
-    max_matched_percentage = 0
-
-    for user in user_list:
-        user2_interest = user.interest
-        matched_interest_count = 0
-        for interest1 in user1_interest:
-            for interest2 in user2_interest.split(','):
-                if partial_token_set_ratio(interest1,interest2) > 90:
-                    print(interest1,interest2)
-                    matched_interest_count += 1
-        matched_interest_percentage = (matched_interest_count/len(user1_interest))*100
-        print(user,matched_interest_percentage)
-        if matched_interest_percentage > max_matched_percentage:
-            max_matched_percentage = matched_interest_percentage
-            max_matched_user = user
-        if matched_interest_percentage > 50:
-            return user.userid,matched_interest_percentage
-    return max_matched_user.userid,max_matched_percentage
-        
-
-
-
 def findparthner(request):
     # import pdb;pdb.set_trace()
     user1_id = request.user.id
@@ -154,8 +122,6 @@ def findparthner(request):
             user2 = user
             max_matched_interest = matched_interest
             break
-        
-
 
     context = {}
     context['user1_interest'] = user1.interest
@@ -170,46 +136,46 @@ def findparthner(request):
     return redirect(room_url)
 
 
-def findparthner2(request):
-    # import pdb;pdb.set_trace()
-    user_id = request.user.id
-    user_additional_info = addtionalInfoModel.objects.get(userid=user_id)
-    user_interest = set(user_additional_info.interest.split(","))
-    user_fluency = user_additional_info.fluency
-    max_score = 0
-    best_user = -1
-    commom_interest = set()
-    isFound = False
-    user = addtionalInfoModel.objects.filter(fluency=user_fluency)
-    print(user)
-    for u in user:
-        if user_id == u.userid.id or user_fluency < u.fluency:
-            continue
-        score = 0
-        u_interest = set(u.interest.split(','))
-        # print(u_interest)
-        matched = user_interest.intersection(u_interest)
-        # print(matched)
-        score = (len(matched)/len(user_interest))*100
-        print(f"user {u.id} matched {score}%")
-        print(u_interest,user_interest)
-        if max_score < score:
-            best_user = u.userid
-            max_score = score
-            commom_interest = matched
-            if max_score >= 50:
-                isFound = True
-        if isFound:
-            break
-    print(best_user,max_score,commom_interest)
+# def findparthner2(request):
+#     # import pdb;pdb.set_trace()
+#     user_id = request.user.id
+#     user_additional_info = addtionalInfoModel.objects.get(userid=user_id)
+#     user_interest = set(user_additional_info.interest.split(","))
+#     user_fluency = user_additional_info.fluency
+#     max_score = 0
+#     best_user = -1
+#     commom_interest = set()
+#     isFound = False
+#     user = addtionalInfoModel.objects.filter(fluency=user_fluency)
+#     print(user)
+#     for u in user:
+#         if user_id == u.userid.id or user_fluency < u.fluency:
+#             continue
+#         score = 0
+#         u_interest = set(u.interest.split(','))
+#         # print(u_interest)
+#         matched = user_interest.intersection(u_interest)
+#         # print(matched)
+#         score = (len(matched)/len(user_interest))*100
+#         print(f"user {u.id} matched {score}%")
+#         print(u_interest,user_interest)
+#         if max_score < score:
+#             best_user = u.userid
+#             max_score = score
+#             commom_interest = matched
+#             if max_score >= 50:
+#                 isFound = True
+#         if isFound:
+#             break
+#     print(best_user,max_score,commom_interest)
 
-    context = {}
-    current_interest = addtionalInfoModel.objects.get(userid=request.user.id).interest
-    context['user_fluency'] = user_fluency
-    context['current_interest'] = current_interest
-    context['best_user'] = best_user
-    context['matched_percentage'] = round(max_score,2)
-    context['common_interest'] = commom_interest
-    return render(request,'home.html',context)
+#     context = {}
+#     current_interest = addtionalInfoModel.objects.get(userid=request.user.id).interest
+#     context['user_fluency'] = user_fluency
+#     context['current_interest'] = current_interest
+#     context['best_user'] = best_user
+#     context['matched_percentage'] = round(max_score,2)
+#     context['common_interest'] = commom_interest
+#     return render(request,'home.html',context)
 
 
