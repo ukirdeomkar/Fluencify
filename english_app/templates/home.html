@@ -15,7 +15,9 @@ Your fluency : {{user_fluency}}
 <!-- <a type="button" class="btn btn-success">Check Fluency</button> -->
 
 <div>
-  <p>Matched User : {{best_user}}</p>
+  <p>Your Interest : {{user1_interest}}</p>
+  <p>Matched User Interest: {{user2_interest}}</p>
+  <p>Matched User : {{user2}}</p>
   <p>Matched With : {{matched_percentage}}%</p>
   <p>Matched Interest : {{common_interest}}</p>
 </div>
@@ -42,7 +44,7 @@ Your fluency : {{user_fluency}}
           <div class="form-group">
             <label for="updated_interest">Interest (separate interest using ",")</label>
             <textarea type="text" class="form-control" id="updated_interest" name="updated_interest"
-              rows="3">{{current_interest}}</textarea>
+              rows="3">{{user1_interest}}</textarea>
           </div>
 
           <button type="submit" class="btn btn-primary">Update</button>
