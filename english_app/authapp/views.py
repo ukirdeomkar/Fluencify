@@ -254,9 +254,9 @@ def save_audio(request):
         with open('save/audio.mp3', 'wb+') as f:
             for chunk in audio.chunks():
                 f.write(chunk)
-        for i in range(30):
-            time.sleep(1)
-            print(i)
+        # for i in range(30):
+        #     time.sleep(1)
+        #     print(i)
         predict_path = 'save/audio.mp3'
         features_predict = feature_out(predict_path)
         prediction = model.predict(features_predict)
