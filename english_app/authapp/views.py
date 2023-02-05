@@ -11,7 +11,8 @@ import nltk
 # nltk.download('wordnet')
 # nltk.download('omw-1.4')
 from nltk.stem import PorterStemmer
-from fuzzywuzzy.fuzz import token_set_ratio
+from fuzzywuzzy.fuzz import partial_token_set_ratio
+import random
 
 def steminize(interest_str):
     ps = PorterStemmer()
@@ -84,7 +85,9 @@ def update(request):
     return redirect(home)
 
 
-def getMatch(user1,target_fluency):
+def getMatch(user1_id,target_fluency):
+    import pdb;pdb.set_trace()
+    user1 = addtionalInfoModel.objects.get(userid=user1_id)
     user1_interest = user1.interest
     print(user1_interest)
     user_list = addtionalInfoModel.objects.filter(fluency=target_fluency)
@@ -98,7 +101,7 @@ def getMatch(user1,target_fluency):
         matched_interest_count = 0
         for interest1 in user1_interest:
             for interest2 in user2_interest.split(','):
-                if token_set_ratio(interest1,interest2) > 80:
+                if partial_token_set_ratio(interest1,interest2) > 90:
                     print(interest1,interest2)
                     matched_interest_count += 1
         matched_interest_percentage = (matched_interest_count/len(user1_interest))*100
@@ -114,19 +117,57 @@ def getMatch(user1,target_fluency):
 
 
 def findparthner(request):
-    user1 = addtionalInfoModel.objects.get(userid=request.user.id)
-    
-
+    # import pdb;pdb.set_trace()
+    user1_id = request.user.id
+    user1 = addtionalInfoModel.objects.get(userid=user1_id)
     target_fluency = user1.fluency
-    user2,matched_percentage = getMatch(user1,target_fluency)
+
+    user1_interest_list = user1.interest.split(',')
+    print(user1_interest_list)
+    user_list = addtionalInfoModel.objects.filter(fluency=target_fluency)
+    
+    # max_matched_user = None
+    user2 = None 
+    max_matched_percentage = 0
+    max_matched_interest = []
+
+    for user in user_list:
+        print(user.userid.id,user1_id)
+        if user.userid.id == user1_id:
+            continue
+        user2_interest_list = user.interest.split(',')
+        matched_interest_count = 0
+        matched_interest = []
+        for interest1 in user1_interest_list:
+            for interest2 in user2_interest_list:
+                if partial_token_set_ratio(interest1,interest2) > 90:
+                    print(interest1,interest2)
+                    matched_interest.append(interest1)
+                    matched_interest_count += 1
+        matched_interest_percentage = (matched_interest_count/len(user1_interest_list))*100
+        print(user.userid.username,matched_interest_percentage)
+        if matched_interest_percentage > max_matched_percentage:
+            max_matched_percentage = matched_interest_percentage
+            user2 = user
+            max_matched_interest = matched_interest
+        if matched_interest_percentage > 50:
+            user2 = user
+            max_matched_interest = matched_interest
+            break
+        
+
 
     context = {}
-    context['current_interest'] = user1.interest
-    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2).interest
-    context['matched_user'] = user2
-    context['matched_percentage'] = round(matched_percentage,2)
-    # context['common_interest'] = commom_interest
+    context['user1_interest'] = user1.interest
+    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
+    context['user2'] = user2.userid
+    context['matched_percentage'] = round(max_matched_percentage,2)
+    context['common_interest'] = ','.join(max_matched_interest)
     return render(request,'home.html',context)
+
+    room_id = random.randint(1000,9999)
+    room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
+    return redirect(room_url)
 
 
 def findparthner2(request):
