@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block fluency %}
+Your fluency : {{user_fluency}}
+{% endblock fluency %}
+
+{% block content %}
+
+<a type="button" class="btn btn-success" href={% url 'findparthner' %}>Find Parthner</a>
+{% comment %} <a type="button" class="btn btn-primary" href={% url 'update' %}>
+  Update Interest
+</a> {% endcomment %}
+<a type="button" class="btn btn-success" href={% url 'record_audio' %}>Check Fluency</a>
+
+<!-- <a type="button" class="btn btn-success">Check Fluency</button> -->
+
+<div>
+  <p>Your Interest : {{user1_interest}}</p>
+  <p>Matched User Interest: {{user2_interest}}</p>
+  <p>Matched User : {{user2}}</p>
+  <p>Matched With : {{matched_percentage}}%</p>
+  <p>Matched Interest : {{common_interest}}</p>
+</div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Update Interest
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Interest</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action={% url 'update' %}>
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="updated_interest">Interest (separate interest using ",")</label>
+            <textarea type="text" class="form-control" id="updated_interest" name="updated_interest"
+              rows="3">{{user1_interest}}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
