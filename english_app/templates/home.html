@@ -10,7 +10,9 @@ Your fluency : {{user_fluency}}
 {% comment %} <a type="button" class="btn btn-primary" href={% url 'update' %}>
   Update Interest
 </a> {% endcomment %}
-<button type="button" class="btn btn-success">Check Fluency</button>
+<a type="button" class="btn btn-success" href={% url 'record_audio' %}>Check Fluency</a>
+
+<!-- <a type="button" class="btn btn-success">Check Fluency</button> -->
 
 <div>
   <p>Matched User : {{best_user}}</p>
