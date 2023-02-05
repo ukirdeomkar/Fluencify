@@ -1,0 +1,112 @@
+<!-- <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="audio" accept="audio/*">
+    <input type="submit" value="Upload Audio">
+</form>
+
+<script type = JavaScript>
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      const mediaRecorder = new MediaRecorder(stream);
+      let chunks = [];
+  
+      mediaRecorder.addEventListener("dataavailable", event => {
+        chunks.push(event.data);
+      });
+  
+      mediaRecorder.addEventListener("stop", () => {
+        const audioBlob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audioElement = document.createElement("audio");
+        audioElement.src = audioUrl;
+        document.body.appendChild(audioElement);
+      });
+  
+      const startButton = document.getElementById("start-button");
+      const stopButton = document.getElementById("stop-button");
+  
+      startButton.addEventListener("click", () => {
+        mediaRecorder.start();
+      });
+  
+      stopButton.addEventListener("click", () => {
+        mediaRecorder.stop();
+      });
+    })
+    .catch(console.error);
+  Note: This code is just a simple example to give you an idea of how it can be done. There are several limitations with this approach like browser compatibility, audio quality, etc. To overcome these limitations, you may want to use a JavaScript library such as RecordRTC or p5.js that provides a more robust API for recording audio in the browser.
+  
+  
+  
+  
+  
+
+</script> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<button id="start-record-btn">Start Recording</button>
+<button id="stop-record-btn" disabled>Stop Recording</button>
+<audio id="recorded-audio" controls></audio>
+
+<script>
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      const startRecordButton = document.getElementById('start-record-btn');
+      const stopRecordButton = document.getElementById('stop-record-btn');
+      const recordedAudio = document.getElementById('recorded-audio');
+  
+      startRecordButton.addEventListener('click', () => {
+        startRecordButton.setAttribute('disabled', true);
+        stopRecordButton.removeAttribute('disabled');
+        recordedAudio.controls = false;
+  
+        const options = { mimeType: 'audio/webm;codecs=vp9' };
+        mediaRecorder = new MediaRecorder(stream, options);
+  
+        const chunks = [];
+        mediaRecorder.ondataavailable = function(e) {
+          chunks.push(e.data);
+        };
+  
+        mediaRecorder.start();
+      });
+  
+      stopRecordButton.addEventListener('click', () => {
+        startRecordButton.removeAttribute('disabled');
+        stopRecordButton.setAttribute('disabled', true);
+        mediaRecorder.stop();
+        recordedAudio.controls = true;
+        
+        const recordedBlob = new Blob(chunks, { type: 'audio/webm' });
+        recordedAudio.src = URL.createObjectURL(recordedBlob);
+        
+        // send the audio to the Django backend for saving
+        const formData = new FormData();
+        formData.append('audio', recordedBlob, 'recorded_audio.webm');
+        fetch('/save-audio/', {
+          method: 'POST',
+          body: formData,
+        });
+      });
+    })
+    .catch(console.error);
+  
+
+
+</script>  
