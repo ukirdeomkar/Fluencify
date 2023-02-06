@@ -13,3 +13,8 @@ class addtionalInfoModel(models.Model):
     interest = models.TextField()
     age = models.IntegerField()
     fluency = models.IntegerField(null=True)
+
+class Room(models.Model):
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE , related_name='user1')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE , related_name='user2')
+    room_id = models.CharField(max_length=10)
