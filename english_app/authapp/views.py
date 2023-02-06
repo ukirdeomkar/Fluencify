@@ -264,6 +264,7 @@ def save_audio(request):
         print("\n\nThe Features is ",features_predict,"\n\n")
         ans = np.argmax(prediction[0]) + 1
         ans =int(ans)
+        print(f'\n\nYour Previous fluency is {addtionalInfoModel.objects.get(userid=request.user.id).fluency}')
         print("\n\nThe Fluency Level is ",ans,"\n\n")
         # addtionalInfoModel.objects.get(userid=request.user.id).update(fluency = ans)
         user_temp = addtionalInfoModel.objects.get(userid=request.user.id)
