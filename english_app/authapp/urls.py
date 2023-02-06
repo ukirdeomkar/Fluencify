@@ -10,5 +10,11 @@ urlpatterns = [
     path("logout", views.logout , name="logout"),
     path("update", views.update , name="update"),
     path("findparthner", views.findparthner , name="findparthner"),
+
     # path("roomdetails", views.roomdetails , name="roomdetails"),
+
+    path('record_audio', views.record_audio, name='record_audio'),
+    path('save_audio/', views.save_audio, name='save_audio'),
+
+
 ]
