@@ -36,7 +36,7 @@ def signup(request):
         if not user :
             if password == confirm_password:
                 user = User.objects.create_user(username=username,password=password,first_name=name)
-                interest_str = steminize(interest_str)
+                # interest_str = steminize(interest_str)
                 addtionalInfoModel.objects.update_or_create(userid=user,interest=interest_str,age=age)
                 return redirect("login")
             else:
@@ -85,13 +85,23 @@ def update(request):
         addtionalInfoModel.objects.filter(userid=request.user).update(interest=updated_interest)
     return redirect(home)
 
-def roomdetails(request,user1_interest,user2_interest,user1,user2,max_matched_percentage,max_matched_interest):
+def roomdetails(request,room):
+    room_id = room.room_id
+    room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
+
+    user1 = request.user
+    if room.user1 == user1:
+        user2 = room.user2
+    else:
+        user2 = room.user1
+
     context = {}
-    context['user1_interest'] = user1.interest
-    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
-    context['matched_user'] = user2.userid
-    context['matched_percentage'] = round(max_matched_percentage,2)
-    context['common_interest'] = ','.join(max_matched_interest)
+    context['room_url'] = room_url
+    context['user1_interest'] = addtionalInfoModel.objects.get(userid=user1.id).interest
+    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.id).interest
+    context['matched_user'] = user2.username
+    context['matched_percentage'] = round(room.matching_percentage,2)
+    context['common_interest'] = room.common_interest
     return render(request,'roomDetails.html',context)
 
 def findparthner(request):
@@ -103,11 +113,8 @@ def findparthner(request):
     if room is not None:
         # room = rooms[0]
         other_user = room.user1 if room.user1 != current_user else room.user2
-        room_id = room.room_id
-        room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
-        return roomdetails(user1_interest=user1.interest,user2_interest=user2.interest,
-                user1=user1,user2=user2,max_matched_percentage=max_matched_percentage,
-                max_matched_interest=max_matched_interest)
+        
+        return roomdetails(request,room)
 
     user1_id = request.user.id
     user1 = addtionalInfoModel.objects.get(userid=user1_id)
@@ -136,6 +143,7 @@ def findparthner(request):
                     print(interest1,interest2)
                     matched_interest.append(interest1)
                     matched_interest_count += 1
+                    break
         matched_interest_percentage = (matched_interest_count/len(user1_interest_list))*100
         print(user.userid.username,matched_interest_percentage)
         if matched_interest_percentage > max_matched_percentage:
@@ -143,19 +151,22 @@ def findparthner(request):
             user2 = user
             max_matched_interest = matched_interest
         if matched_interest_percentage > 50:
+            max_matched_percentage = matched_interest_percentage
             user2 = user
             max_matched_interest = matched_interest
             break
-
-    
+            
+    if user2 == None:
+        return HttpResponse('No Match Found! Please Try After Sometime')
+    common_interest = ','.join(max_matched_interest)
     ruser1 = User.objects.get(id=user1_id)
     ruser2 = User.objects.get(id=user2.userid.id)
-    room_id = random.randint(1000,9999)
-    room = Room.objects.create(user1=ruser1 , user2=ruser2 , room_id=room_id)
 
-    roomdetails(user1_interest=user1.interest,user2_interest=user2.interest,
-                user1=user1,user2=user2,max_matched_percentage=max_matched_percentage,
-                max_matched_interest=max_matched_interest)
+    room_id = random.randint(1000,9999)
+    room = Room.objects.create(user1=ruser1 , user2=ruser2 , room_id=room_id , 
+                            common_interest=common_interest,matching_percentage=max_matched_percentage)
+
+    return roomdetails(request,room)
 
     # context = {}
     # context['user1_interest'] = user1.interest
@@ -165,14 +176,6 @@ def findparthner(request):
     # context['common_interest'] = ','.join(max_matched_interest)
     # return render(request,'home.html',context)
 
-
-    context = {}
-    context['user1_interest'] = user1.interest
-    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
-    context['user2'] = user2.userid
-    context['matched_percentage'] = round(max_matched_percentage,2)
-    context['common_interest'] = ','.join(max_matched_interest)
-    return render(request,'home.html',context)
 
 
     room_id = random.randint(1000,9999)
@@ -309,7 +312,12 @@ def save_audio(request):
         print("\n\nThe Features is ",features_predict,"\n\n")
         ans = np.argmax(prediction[0]) + 1
         ans =int(ans)
-        print(f'\n\nYour Previous fluency is {addtionalInfoModel.objects.get(userid=request.user.id).fluency}')
+        temp = addtionalInfoModel.objects.filter(userid=request.user.id)
+        previous_fluency = None
+        if temp != None:
+            previous_fluency = temp.first().fluency
+            
+        print(f'\n\nYour Previous fluency is {previous_fluency}')
         print("\n\nThe Fluency Level is ",ans,"\n\n")
         # addtionalInfoModel.objects.get(userid=request.user.id).update(fluency = ans)
         user_temp = addtionalInfoModel.objects.get(userid=request.user.id)
