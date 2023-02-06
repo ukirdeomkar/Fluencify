@@ -5,7 +5,8 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.http import *
 from django.contrib import messages
-from .models import addtionalInfoModel
+from .models import addtionalInfoModel,Room
+from django.db.models import Q
 
 import nltk
 # nltk.download('wordnet')
@@ -84,11 +85,34 @@ def update(request):
         addtionalInfoModel.objects.filter(userid=request.user).update(interest=updated_interest)
     return redirect(home)
 
+def roomdetails(request,user1_interest,user2_interest,user1,user2,max_matched_percentage,max_matched_interest):
+    context = {}
+    context['user1_interest'] = user1.interest
+    context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
+    context['matched_user'] = user2.userid
+    context['matched_percentage'] = round(max_matched_percentage,2)
+    context['common_interest'] = ','.join(max_matched_interest)
+    return render(request,'roomDetails.html',context)
+
 def findparthner(request):
     # import pdb;pdb.set_trace()
+
+    current_user = request.user
+    room = Room.objects.filter(Q(user1=current_user) | Q(user2=current_user)).last()
+    print(room)
+    if room is not None:
+        # room = rooms[0]
+        other_user = room.user1 if room.user1 != current_user else room.user2
+        room_id = room.room_id
+        room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
+        return roomdetails(user1_interest=user1.interest,user2_interest=user2.interest,
+                user1=user1,user2=user2,max_matched_percentage=max_matched_percentage,
+                max_matched_interest=max_matched_interest)
+
     user1_id = request.user.id
     user1 = addtionalInfoModel.objects.get(userid=user1_id)
     target_fluency = user1.fluency
+
 
     user1_interest_list = user1.interest.split(',')
     print(user1_interest_list)
@@ -123,6 +147,25 @@ def findparthner(request):
             max_matched_interest = matched_interest
             break
 
+    
+    ruser1 = User.objects.get(id=user1_id)
+    ruser2 = User.objects.get(id=user2.userid.id)
+    room_id = random.randint(1000,9999)
+    room = Room.objects.create(user1=ruser1 , user2=ruser2 , room_id=room_id)
+
+    roomdetails(user1_interest=user1.interest,user2_interest=user2.interest,
+                user1=user1,user2=user2,max_matched_percentage=max_matched_percentage,
+                max_matched_interest=max_matched_interest)
+
+    # context = {}
+    # context['user1_interest'] = user1.interest
+    # context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
+    # context['user2'] = user2.userid
+    # context['matched_percentage'] = round(max_matched_percentage,2)
+    # context['common_interest'] = ','.join(max_matched_interest)
+    # return render(request,'home.html',context)
+
+
     context = {}
     context['user1_interest'] = user1.interest
     context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
@@ -130,6 +173,7 @@ def findparthner(request):
     context['matched_percentage'] = round(max_matched_percentage,2)
     context['common_interest'] = ','.join(max_matched_interest)
     return render(request,'home.html',context)
+
 
     room_id = random.randint(1000,9999)
     room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
@@ -180,7 +224,8 @@ def findparthner(request):
 
 
 
-# ------------------------------------------------------Fuck off-------------------------
+
+# ------------------------------------------------------Model added-------------------------
 
 from django.shortcuts import render
 # from .models import Audio
@@ -283,7 +328,6 @@ def save_audio(request):
 
 
     
-
 
 
 
