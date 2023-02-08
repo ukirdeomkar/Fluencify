@@ -10,6 +10,7 @@ urlpatterns = [
     path("logout", views.logout , name="logout"),
     path("update", views.update , name="update"),
     path("findparthner", views.findparthner , name="findparthner"),
+    path("findother", views.findother , name="findother"),
 
     # path("roomdetails", views.roomdetails , name="roomdetails"),
 

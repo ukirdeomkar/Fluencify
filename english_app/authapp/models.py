@@ -19,4 +19,6 @@ class Room(models.Model):
     user2 = models.ForeignKey(User, on_delete=models.CASCADE , related_name='user2')
     room_id = models.CharField(max_length=10)
     common_interest = models.TextField()
-    matching_percentage = models.IntegerField()
+    matching_percentage = models.DecimalField(max_digits=4,decimal_places=2)
+
+

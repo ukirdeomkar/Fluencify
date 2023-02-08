@@ -14,13 +14,14 @@ import nltk
 from nltk.stem import PorterStemmer
 from fuzzywuzzy.fuzz import partial_token_set_ratio
 import random
+import time
 
-def steminize(interest_str):
-    ps = PorterStemmer()
-    interest_list = interest_str.strip().split(',')
-    interest_processed = [ps.stem(inst) for inst in interest_list]
-    processed_interest_str = ','.join(interest_processed)
-    return processed_interest_str
+# def steminize(interest_str):
+#     ps = PorterStemmer()
+#     interest_list = interest_str.strip().split(',')
+#     interest_processed = [ps.stem(inst) for inst in interest_list]
+#     processed_interest_str = ','.join(interest_processed)
+#     return processed_interest_str
 
 def signup(request):
     if request.method == "POST":
@@ -53,7 +54,7 @@ def login(request):
         data = request.POST
         username = data['username']
         password = data['password']
-
+        print(User.objects.get(username=username).password)
         user = authenticate(request,username=username,password=password)
         if user is not None:
             auth_login(request,user)
@@ -72,9 +73,8 @@ def home(request):
     context = {}
     if request.user.is_authenticated:
         print(request.user.id)
-        current_interest = addtionalInfoModel.objects.get(userid=request.user.id).interest
-        # print(current_interest)
-        context['current_interest'] = current_interest
+        context['user1_interest'] = addtionalInfoModel.objects.get(userid=request.user.id).interest
+        context['user1_fluency'] = addtionalInfoModel.objects.get(userid=request.user.id).fluency
         return render(request,'home.html',context)
     return redirect(login)
 
@@ -86,15 +86,11 @@ def update(request):
     return redirect(home)
 
 def roomdetails(request,room):
-    room_id = room.room_id
-    room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
+    room_url = f'https://english-learn-meet-call.web.app/?id={room.room_id}'
 
     user1 = request.user
-    if room.user1 == user1:
-        user2 = room.user2
-    else:
-        user2 = room.user1
-
+    user2 = room.user2 if room.user1 == user1 else room.user1
+    
     context = {}
     context['room_url'] = room_url
     context['user1_interest'] = addtionalInfoModel.objects.get(userid=user1.id).interest
@@ -107,32 +103,31 @@ def roomdetails(request,room):
 def findparthner(request):
     # import pdb;pdb.set_trace()
 
+    #wait to avoid inconsistency
+    # time.sleep(5)
+
     current_user = request.user
     room = Room.objects.filter(Q(user1=current_user) | Q(user2=current_user)).last()
     print(room)
     if room is not None:
-        # room = rooms[0]
-        other_user = room.user1 if room.user1 != current_user else room.user2
-        
         return roomdetails(request,room)
 
-    user1_id = request.user.id
-    user1 = addtionalInfoModel.objects.get(userid=user1_id)
-    target_fluency = user1.fluency
-
-
+    user1 = addtionalInfoModel.objects.get(userid=current_user.id)
+    user1_fluency = user1.fluency
     user1_interest_list = user1.interest.split(',')
     print(user1_interest_list)
-    user_list = addtionalInfoModel.objects.filter(fluency=target_fluency)
-    
-    # max_matched_user = None
+
+    exclude_users = list(Room.objects.values_list('user1', flat=True)) + list(Room.objects.values_list('user1', flat=True))
+    user_list = addtionalInfoModel.objects.exclude(userid__in=exclude_users).exclude(id=current_user.id)
+    print(len(user_list))
+
     user2 = None 
     max_matched_percentage = 0
     max_matched_interest = []
 
     for user in user_list:
-        print(user.userid.id,user1_id)
-        if user.userid.id == user1_id:
+        print(f"Matching with {user1.userid}")
+        if user.userid.id == user1.userid.id:
             continue
         user2_interest_list = user.interest.split(',')
         matched_interest_count = 0
@@ -144,22 +139,22 @@ def findparthner(request):
                     matched_interest.append(interest1)
                     matched_interest_count += 1
                     break
-        matched_interest_percentage = (matched_interest_count/len(user1_interest_list))*100
-        print(user.userid.username,matched_interest_percentage)
-        if matched_interest_percentage > max_matched_percentage:
-            max_matched_percentage = matched_interest_percentage
+        user1_matched_percentage = (matched_interest_count/len(user1_interest_list))*100
+        user2_matched_percentage = (matched_interest_count/len(user2_interest_list))*100
+        print(f"Matching with {user.userid.username} User 1 Matched {user1_matched_percentage}, \
+              User 2 Matched {user2_matched_percentage}")
+        if user1_matched_percentage >= 50 and user2_matched_percentage >= 50:
+            max_matched_percentage = user1_matched_percentage
             user2 = user
             max_matched_interest = matched_interest
-        if matched_interest_percentage > 50:
-            max_matched_percentage = matched_interest_percentage
-            user2 = user
-            max_matched_interest = matched_interest
-            break
+            if max_matched_percentage > 50:
+                break 
             
     if user2 == None:
-        return HttpResponse('No Match Found! Please Try After Sometime')
+        return HttpResponse('No Match Found! Please Try Again After Sometime')
+    
     common_interest = ','.join(max_matched_interest)
-    ruser1 = User.objects.get(id=user1_id)
+    ruser1 = User.objects.get(id=user1.userid.id)
     ruser2 = User.objects.get(id=user2.userid.id)
 
     room_id = random.randint(1000,9999)
@@ -168,63 +163,10 @@ def findparthner(request):
 
     return roomdetails(request,room)
 
-    # context = {}
-    # context['user1_interest'] = user1.interest
-    # context['user2_interest'] = addtionalInfoModel.objects.get(userid=user2.userid).interest
-    # context['user2'] = user2.userid
-    # context['matched_percentage'] = round(max_matched_percentage,2)
-    # context['common_interest'] = ','.join(max_matched_interest)
-    # return render(request,'home.html',context)
 
-
-
-    room_id = random.randint(1000,9999)
-    room_url = f'https://english-learn-meet-call.web.app/?id={room_id}'
-    return redirect(room_url)
-
-
-# def findparthner2(request):
-#     # import pdb;pdb.set_trace()
-#     user_id = request.user.id
-#     user_additional_info = addtionalInfoModel.objects.get(userid=user_id)
-#     user_interest = set(user_additional_info.interest.split(","))
-#     user_fluency = user_additional_info.fluency
-#     max_score = 0
-#     best_user = -1
-#     commom_interest = set()
-#     isFound = False
-#     user = addtionalInfoModel.objects.filter(fluency=user_fluency)
-#     print(user)
-#     for u in user:
-#         if user_id == u.userid.id or user_fluency < u.fluency:
-#             continue
-#         score = 0
-#         u_interest = set(u.interest.split(','))
-#         # print(u_interest)
-#         matched = user_interest.intersection(u_interest)
-#         # print(matched)
-#         score = (len(matched)/len(user_interest))*100
-#         print(f"user {u.id} matched {score}%")
-#         print(u_interest,user_interest)
-#         if max_score < score:
-#             best_user = u.userid
-#             max_score = score
-#             commom_interest = matched
-#             if max_score >= 50:
-#                 isFound = True
-#         if isFound:
-#             break
-#     print(best_user,max_score,commom_interest)
-
-#     context = {}
-#     current_interest = addtionalInfoModel.objects.get(userid=request.user.id).interest
-#     context['user_fluency'] = user_fluency
-#     context['current_interest'] = current_interest
-#     context['best_user'] = best_user
-#     context['matched_percentage'] = round(max_score,2)
-#     context['common_interest'] = commom_interest
-#     return render(request,'home.html',context)
-
+def findother(request):
+    Room.objects.filter(Q(user1=request.user) | Q(user2=request.user)).delete()
+    return redirect(findparthner)
 
 
 
@@ -240,7 +182,7 @@ import os
 import pdb 
 import time 
 import pickle 
-model = pickle.load(open('model/mlp_300_32.sav', 'rb'))
+# model = pickle.load(open('model/mlp_300_32.sav', 'rb'))
 
 
 def feature_extraction(file_name):
