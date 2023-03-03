@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'authapp'
+    'users_app',
+    'main_app',
 ]
 
 MIDDLEWARE = [
@@ -77,14 +78,14 @@ WSGI_APPLICATION = 'english_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'englishdatabase',
-        # 'USER': 'root',
-        # 'PASSWORD': 'mysql',
-        # 'HOST':'localhost',
-        # 'PORT':'3306',
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'englishdatabase',
+        'USER': 'root',
+        'PASSWORD': 'mysql',
+        'HOST':'localhost',
+        'PORT':'3306',
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -124,6 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR , 'static')]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

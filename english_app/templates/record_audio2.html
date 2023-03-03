@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>English Partner Finder - Video Call</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+      .circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 5px solid #f2f2f2;
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #28a745;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer h1 {
+  font-size: 30px;
+  color: #28a745;
+  margin: 0;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <div class="circle">
+            <div class="timer">
+              <h1>00:00:00</h1>
+            </div>
+          </div>
+          <div class="btn-group mt-3" role="group">
+            <button type="button" class="btn btn-primary">Start</button>
+            <button type="button" class="btn btn-secondary">Stop</button>
+            <button type="button" class="btn btn-danger">Reset</button>
+            <button type="button" class="btn btn-success">Check Fluency</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popperjs.min.js" integrity="sha384-pQ8VhUr1JRf9JdQC+DmnsW8z+xYwYbhJcFv/Bo6TbTnJnHrNS3E6v/zN6ryN8pq"></script>
+    <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.19.0/twilio-video.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+  </body>
+</html>

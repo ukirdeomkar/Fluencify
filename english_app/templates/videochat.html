@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Chat Room {{ room_id }}</h1>
+<div id="video-chat-room"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplewebrtc/3.0.5/simplewebrtc.min.js"></script>
+<script>
+var webrtc = new SimpleWebRTC({
+    // Replace the values below with your own API keys
+    key: '1ca11f7d82a6bac0ee4f0982',
+    domain: 'english-learn-meet-call.firebaseapp.com',
+    // Specify the room name
+    roomName: '{{ room_id }}',
+    // Add other options as needed
+    //...
+});
+
+webrtc.on('readyToCall', function() {
+    // Join the video chat room
+    webrtc.joinRoom('{{ room_id }}');
+});
+
+webrtc.on('videoAdded', function(video, peer) {
+    // Add the video element to the page
+    var container = document.getElementById('video-chat-room');
+    container.appendChild(video);
+});
+
+webrtc.on('videoRemoved', function(video, peer) {
+    // Remove the video element from the page
+    var container = document.getElementById('video-chat-room');
+    container.removeChild(video);
+});
+</script>
+{% endblock %}
