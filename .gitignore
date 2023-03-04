@@ -1,2 +1,9 @@
 pyenv
 .venv
+migrations/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
