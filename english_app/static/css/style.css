@@ -1,3 +1,46 @@
+.body{
+    padding-top: 70px;
+    background-color: black !important;
+    /* color: white; */
+}
+
+.container{
+    color: white;
+}
+ 
+
+.navbar-brand-logo{
+    height: 50px;
+}
+
+.navbar-brand{
+    padding: 0;
+}
+
+.navbar{
+    padding: 8px 30px;
+    background-color: orange    ;
+}
+
+.signup-showcase-container{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    /* background-color: red; */
+    color: white;
+}
+
+.signup-showcase-container > p{
+    font-size: 50px;
+}
+
+.signup-form-container{
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: white;
+}
+
 #interestsContainer {
     display: flex;
     flex-wrap: wrap;
@@ -35,4 +78,59 @@
     font-size: 12px;
     font-weight: bold;
     color: #212529;
+}
+
+.circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.timer {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 5px solid #28a745;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* box-shadow: 0px 8px 10px rgb(0 0 0 / 70%); */
+}
+
+.timer h1 {
+    font-size: 30px;
+    color: #28a745;
+    margin: 0;
+}
+
+.paragraph {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.modal-header{
+    background-color: orange;
+}
+
+.modal-body{
+    background-color: black;
+    color: white;
+}
+
+.modal-footer{
+    background-color: black;
+}
+
+.btn{
 }

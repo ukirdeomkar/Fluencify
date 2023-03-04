@@ -6,6 +6,21 @@ from django.db.models import Q
 from fuzzywuzzy.fuzz import partial_token_set_ratio
 import random
 
+import os
+from django.http import JsonResponse
+from .models import Paragraph
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
+import wave
+import numpy as np
+import librosa
+import os
+import pdb 
+import time 
+import pickle 
+# model = pickle.load(open('model/mlp_300_32.sav', 'rb'))
+
 
 def home(request):
     context = {}
@@ -13,6 +28,7 @@ def home(request):
         print(request.user.id)
         context['user1_interest'] = UserAdditionalModel.objects.get(userid=request.user.id).interest.split(",")
         context['user1_fluency'] = UserAdditionalModel.objects.get(userid=request.user.id).fluency
+        print(context['user1_interest'])
         return render(request,'home2.html',context)
     return redirect('login')
 
@@ -97,20 +113,7 @@ def findparthner(request):
 
 # Fluency++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-import os
-from django.http import JsonResponse
-from .models import Paragraph
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect
-import wave
-import numpy as np
-import librosa
-import os
-import pdb 
-import time 
-import pickle 
-# model = pickle.load(open('model/mlp_300_32.sav', 'rb'))
+
 
 def feature_extraction(file_name):
     # pdb.set_trace()
