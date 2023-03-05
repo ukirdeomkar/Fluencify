@@ -182,7 +182,9 @@ import os
 import pdb 
 import time 
 import pickle 
+import joblib 
 # model = pickle.load(open('model/mlp_300_32.sav', 'rb'))
+model = joblib.load("model/mlp_32_joblib.sav")
 
 
 def feature_extraction(file_name):
