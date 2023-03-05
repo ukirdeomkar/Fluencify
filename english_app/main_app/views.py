@@ -29,7 +29,7 @@ def home(request):
         context['user1_interest'] = UserAdditionalModel.objects.get(userid=request.user.id).interest.split(",")
         context['user1_fluency'] = UserAdditionalModel.objects.get(userid=request.user.id).fluency
         print(context['user1_interest'])
-        return render(request,'home2.html',context)
+        return render(request,'home.html',context)
     return redirect('login')
 
 
@@ -97,7 +97,7 @@ def findparthner(request):
             if max_matched_percentage > 50:
                 break 
             
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
     if user2 == None:
         return HttpResponse('No Match Found! Please Try Again After Sometime')
     
@@ -152,14 +152,14 @@ def check_fluency(request):
         with open('save/audio.mp3', 'wb+') as f:
             for chunk in audio.chunks():
                 f.write(chunk)
-        # for i in range(30):
-        #     time.sleep(1)
-        #     print(i)
-        # predict_path = 'save/audio.mp3'
-        # features_predict = feature_out(predict_path)
+        for i in range(30):
+            time.sleep(1)
+            print(i)
+        predict_path = 'save/audio.mp3'
+        features_predict = feature_out(predict_path)
         # prediction = model.predict(features_predict)
 
-        # print("\n\nThe Features is ",features_predict,"\n\n")
+        print("\n\nThe Features is ",features_predict,"\n\n")
         # ans = np.argmax(prediction[0]) + 1
         # ans =int(ans)
         # temp = UserAdditionalModel.objects.filter(userid=request.user.id)
@@ -174,7 +174,7 @@ def check_fluency(request):
         # user_temp.fluency = ans 
         # user_temp.save()
 
-        prediction = "1"
+        # prediction = "1"
 
         return JsonResponse({'fluency': prediction})
      
@@ -183,6 +183,6 @@ def check_fluency(request):
     context = {}
     context["user_fluency"] = user_fluency
     context["paragraph"] = random_paragraph
-    return render(request, 'fluencycheck.html',context=context)
+    return render(request, 'record_audio.html',context=context)
 
 

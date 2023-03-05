@@ -90,7 +90,7 @@
 
   function sendData(formData) {
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/save_audio/', true);
+    xhr.open('POST', '/check_fluency', true);
     xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     xhr.send(formData);
   }

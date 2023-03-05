@@ -22,6 +22,7 @@
     background-color: orange    ;
 }
 
+
 .signup-showcase-container{
     display: flex;
     align-items: center;
@@ -39,6 +40,14 @@
     border-radius: 5px;
     padding: 20px;
     background-color: white;
+}
+
+.login-form-container{
+    /* border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: white; */
+    color: white;
 }
 
 #interestsContainer {
@@ -96,7 +105,7 @@
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    border: 5px solid #28a745;
+    border: 5px solid orange;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -109,7 +118,7 @@
 
 .timer h1 {
     font-size: 30px;
-    color: #28a745;
+    color: orange;
     margin: 0;
 }
 
