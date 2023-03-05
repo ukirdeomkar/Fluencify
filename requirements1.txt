@@ -26,7 +26,7 @@ certifi==2022.6.15
 cffi==1.15.0
 cftime==1.6.1
 charset-normalizer==2.1.1
-click==7.1.2
+click
 clikit==0.6.2
 cmdstanpy==1.1.0
 colorama==0.4.4
@@ -123,7 +123,7 @@ nest-asyncio==1.5.5
 netCDF4==1.6.0
 networkx==2.8.6
 nfoursid==1.0.1
-nltk==3.7
+nltk
 notebook==6.4.10
 numba==0.56.4
 numpy==1.23.2
@@ -214,7 +214,6 @@ stack-data==0.4.0
 starlette==0.14.2
 statsforecast==0.6.0
 statsmodels==0.13.2
-streamlit==1.12.0
 tbats==1.1.0
 tenacity==8.0.1
 tensorboard==2.8.0
@@ -242,7 +241,6 @@ tzdata==2022.2
 tzlocal==4.2
 ujson==5.4.0
 urllib3==1.26.11
-uvicorn==0.13.4
 validators==0.20.0
 virtualenv==20.14.1
 virtualenv-clone==0.5.7
