@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}English-Learn | Room Details{% endblock title %}
+{% block content %}
+<div class="jumbotron">
+    <h3 class="display-4">You Matched With {{matched_user}} with {{matched_percentage}}%</h3>
+    <!-- <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4"> -->
+    <p>Your Interest : {{user1_interest}}</p>
+    <p>Matched User Interest: {{user2_interest}}</p>
+    <p>Common Interest : {{common_interest}}</p>
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href={{room_url}} role="button" target="_blank">Click To Join</a>
+    </p>
+  </div>
+{% endblock content %}

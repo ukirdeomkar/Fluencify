@@ -1,39 +1,114 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
+{% block title %} English-Learn | Signup {%endblock title %} {% block content %}
 
-{% block title %}English-Learn | Signup{% endblock title %}
-{% block content %}
-<div class="container mt-3">
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{message}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        {% endfor %}
-    {% endif %}
-    <form method="POST">
+<div class="container-fluid">
+  <div class="row mb-5 p-5">
+    <div class="col-md-6 signup-showcase-container"> 
+        <p>
+            Join &amp; <br> 
+            Let's <span class="auto-type"></span>
+        </p>
+    </div>
+    <div class="col-md-6 signup-form-container ">
+      {% if messages %} {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %}
+      <form method="POST" id="signup-form">
         {% csrf_token %}
         <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" >
-        </div> 
-        <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" name="username" >
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" name="name" />
         </div>
         <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+          />
         </div>
         <div class="form-group">
-        <label for="confirm_password">Confirm Password</label>
-        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+          />
         </div>
-        
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="confirm_password"
+            name="confirm_password"
+          />
+        </div>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" class="form-control" id="age" name="age" />
+        </div>
+        <div class="form-group">
+          <label for="interestsInput">Interests </label>
+          <input
+            type="text"
+            class="form-control"
+            id="interest"
+            name="interest"
+            placeholder="Type your interests and press Enter"
+          />
+          <div id="interestsContainer" class="border-0"></div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const interestsInput = document.getElementById("interest");
+    const interestsContainer = document.getElementById("interestsContainer");
+
+    interestsInput.addEventListener("keydown", function (event) {
+      if (event.code === "Enter") {
+        event.preventDefault();
+        const interest = event.target.value.trim();
+        if (interest !== "") {
+          const interestsBox = document.createElement("span");
+          interestsBox.classList.add("interestsBox");
+          interestsBox.innerHTML = `
+        
+        <span class="delete" onclick="deleteInterest(this)">${interest}</span>
+      `;
+          interestsContainer.appendChild(interestsBox);
+          interestsInput.value = "";
+        }
+      }
+    });
+
+    function deleteInterest(element) {
+      element.parentElement.remove();
+    }
+  
+    var typed = new Typed(".auto-type",{
+        strings: ["Connect" , "Learn" , "Improve"],
+        typeSpeed : 130,
+        backSpeed : 130,
+        loop : true
+    })
+  </script>
 </div>
 {% endblock content %}

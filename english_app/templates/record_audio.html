@@ -1,0 +1,141 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Record Audio</title>
+  <script>
+    let audio = document.createElement('audio');
+    let mediaRecorder;
+    let chunks = [];
+
+    function startRecording() {
+      let constraints = { audio: true, video: false };
+      navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        mediaRecorder.addEventListener("dataavailable", function(event) {
+          chunks.push(event.data);
+        });
+      });
+    }
+
+    function stopRecording() {
+      mediaRecorder.stop();
+      let audioBlob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+      chunks = [];
+      let audioUrl = URL.createObjectURL(audioBlob);
+      audio.src = audioUrl;
+    }
+
+    function playRecording() {
+      audio.play();
+    }
+  </script>
+</head>
+<body>
+  <button onclick="startRecording()">Start Recording</button>
+  <button onclick="stopRecording()">Stop Recording</button>
+  <button onclick="playRecording()">Play Recording</button>
+  {{ audio|safe }}
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Record Audio</title>
+  <script>
+    
+    let audio = document.createElement('audio');
+    let mediaRecorder;
+    let chunks = [];
+    function startRecording() {
+    let constraints = { audio: true, video: false };
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.start();
+      mediaRecorder.addEventListener("dataavailable", function(event) {
+        chunks.push(event.data);
+      });
+    });
+  }
+  function stopRecording() {
+    mediaRecorder.stop();
+    let audioBlob = new Blob(chunks, { type : 'audio/mp3' });
+    chunks = [];
+    let formData = new FormData();
+    formData.append('audio', audioBlob, 'audio.mp3');
+    // console.log(formData);
+    sendData(formData);
+
+  }
+  function playRecording() {
+      audio.play();
+    }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      let cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function sendData(formData) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/check_fluency', true);
+    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    xhr.send(formData);
+  }
+
+    // function startRecording() {
+    //   let constraints = { audio: true, video: false };
+    //   navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+    //     mediaRecorder = new MediaRecorder(stream);
+    //     mediaRecorder.start();
+    //     mediaRecorder.addEventListener("dataavailable", function(event) {
+    //       chunks.push(event.data);
+    //     });
+    //   });
+    // }
+
+    // function stopRecording() {
+    //   mediaRecorder.stop();
+    //   let audioBlob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+    //   chunks = [];
+    //   let audioUrl = URL.createObjectURL(audioBlob);
+    //   audio.src = audioUrl;
+    //   uploadAudio(audioBlob);
+    // }
+    // console.log(audioBlob);
+
+
+
+    // function uploadAudio(audioBlob) {
+    //   let formData = new FormData();
+    //   formData.append('audio', audioBlob, 'audio.ogg');
+    //   fetch('/save_audio/', {
+    //     method: 'POST',
+    //     body: formData
+    //   }).then(response => {
+    //     console.log(response);
+    //   });
+    // }
+  </script>
+</head>
+<body>
+  <button onclick="startRecording()">Start Recording</button>
+  
+  <button onclick="stopRecording()">Stop Recording</button>
+  <!-- <button onclick="playRecording()">Play Recording</button> -->
+  {{ audio|safe }}
+</body>
+</html>
+
