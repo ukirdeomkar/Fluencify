@@ -1,4 +1,5 @@
 pyenv
+newenv 
 .venv
 migrations/
 __pycache__/
