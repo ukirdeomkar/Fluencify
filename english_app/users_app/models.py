@@ -7,3 +7,12 @@ class UserAdditionalModel(models.Model):
     interest = models.TextField()
     age = models.IntegerField()
     fluency = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.userid.username
+    
+
+
+
+
+
