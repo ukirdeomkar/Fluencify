@@ -42,6 +42,7 @@
             <div id="interestsContainer" class="border-0">
               {% if user1_interest|first %}
               {% for interest in user1_interest%}
+              
                 <div class="interestsBox ">
                   <span class="delete" onclick="deleteInterest(this)">{{interest}}</span>
                 </div>
@@ -53,7 +54,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" onclick="submitForm()">Save Changes</button>
+        <button type="submit" class="btn ui-btn" onclick="submitForm()">Save Changes</button>
       </div>
     </div>
   </div>

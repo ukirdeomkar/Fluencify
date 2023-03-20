@@ -4,14 +4,14 @@
 {% block title %}English-Learn | Room Details{% endblock title %}
 {% block content %}
 <div class="jumbotron">
-    <h3 class="display-4">You Matched With {{matched_user}} with {{matched_percentage}}%</h3>
+    <p class="display-partner">You matched with <span class="display-partner-info">{{matched_user}}</span> with <span class="display-partner-info">{{matched_percentage}}%</span></p>
     <!-- <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
     <hr class="my-4"> -->
-    <p>Your Interest : {{user1_interest}}</p>
-    <p>Matched User Interest: {{user2_interest}}</p>
-    <p>Common Interest : {{common_interest}}</p>
+    <p><b>Your Interest :</b> <i>{{user1_interest}}</i></p>
+    <p><b>Matched User Interest :</b> <i>{{user2_interest}}</i></p>
+    <p><b>Common Interest :</b> <i>{{common_interest}}</i></p>
     <p class="lead">
-      <a class="btn btn-primary btn-lg" href={{room_url}} role="button" target="_blank">Click To Join</a>
+      <a class="ui-btn btn btn-lg mt-3" href={{room_url}} role="button" target="_blank">Click To Join</a>
     </p>
   </div>
 {% endblock content %}

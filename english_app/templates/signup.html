@@ -6,9 +6,13 @@
   <div class="row mb-5 p-5">
     <div class="col-md-6 signup-showcase-container"> 
         <p>
-            Join &amp; <br> 
+            Join Us &amp; <br> 
             Let's <span class="auto-type"></span>
         </p>
+        {% comment %} <p>
+          Let's Join  <br> 
+          and <span class="auto-type"></span>
+        </p> {% endcomment %}
     </div>
     <div class="col-md-6 signup-form-container ">
       {% if messages %} {% for message in messages %}
@@ -28,7 +32,7 @@
         {% csrf_token %}
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" name="name" />
+          <input type="text" class="form-control" id="name" name="name" required />
         </div>
         <div class="form-group">
           <label for="username">Username</label>
@@ -37,6 +41,7 @@
             class="form-control"
             id="username"
             name="username"
+            required
           />
         </div>
         <div class="form-group">
@@ -46,6 +51,7 @@
             class="form-control"
             id="password"
             name="password"
+            required
           />
         </div>
         <div class="form-group">
@@ -55,6 +61,7 @@
             class="form-control"
             id="confirm_password"
             name="confirm_password"
+            required
           />
         </div>
         <div class="form-group">
@@ -70,10 +77,10 @@
             name="interest"
             placeholder="Type your interests and press Enter"
           />
-          <div id="interestsContainer" class="border-0"></div>
+          <div id="interestsContainer" class=""></div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn ui-btn">Submit</button>
       </form>
     </div>
   </div>

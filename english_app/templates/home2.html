@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="form-group">
+        <label for="interestsDropdown">Interests:</label>
+        <div class="dropdown">
+          <input type="text" class="form-control dropdown-toggle" id="interestsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" placeholder="Search interests...">
+          <div class="dropdown-menu" aria-labelledby="interestsDropdown">
+            {% for interest in interests %}
+              <a class="dropdown-item" href="#" data-value="{{interest}}">{{interest}}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div id="interestsContainer"></div>
+      
+      <script>
+        $(document).ready(function() {
+          // Filter the list of interests based on the user's search query
+          $('#interestsDropdown').on('input', function() {
+            var query = $(this).val().toLowerCase();
+            $('.dropdown-menu a').filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(query) > -1);
+            });
+          });
+      
+          // Add the selected interest to the interests container when an option is clicked
+          $(document).on('click', '.dropdown-menu a', function() {
+            var value = $(this).data('value');
+            var span = $('<span>').addClass('interestsBox');
+            $('<span>').addClass('delete').text(value).appendTo(span);
+            span.appendTo('#interestsContainer');
+            $('#interestsDropdown').val('');
+          });
+      
+          // Remove the selected interest from the interests container when the delete button is clicked
+          $(document).on('click', '.delete', function() {
+            $(this).closest('.interestsBox').remove();
+          });
+        });
+      </script>
+      
+      {% endblock content %}

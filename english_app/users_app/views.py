@@ -6,6 +6,8 @@ from django.contrib.auth import login as auth_login
 from django.http import *
 from django.contrib import messages
 from .models import UserAdditionalModel
+from main_app.models import Room
+from django.db.models import Q
 
 def signup(request):
     if request.method == "POST":
@@ -60,4 +62,5 @@ def update(request):
         updated_interest = request.POST['interestsInput']
         print(updated_interest)
         UserAdditionalModel.objects.filter(userid=request.user).update(interest=updated_interest)
+        Room.objects.filter(Q(user1=request.user) | Q(user2=request.user)).delete()
     return redirect('home')
