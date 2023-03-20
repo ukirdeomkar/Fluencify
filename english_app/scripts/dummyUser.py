@@ -4,9 +4,10 @@ from users_app.models import UserAdditionalModel
 
 interests = ['Reading', 'Writing', 'Cooking', 'Sports', 'Music', 'Movies', 'Traveling', 'Photography', 'Art', 'Dancing', 'Gaming', 'Hiking', 'Shopping', 'Swimming', 'Yoga', 'Food', 'Technology', 'Politics', 'Business', 'Fashion', 'Fitness', 'Pets', 'Science', 'History', 'Education', 'Nature', 'Spirituality', 'Cars', 'Motorcycles', 'Biking', 'Fishing']
 
-for i in range(500):
+for i in range(1000  ,1300):
     # Generate random user details
     username = f'user{i}'
+    print('\n',i,'\n')
     password = 'password'
     name = f'User {i}'
     age = random.randint(18, 65)

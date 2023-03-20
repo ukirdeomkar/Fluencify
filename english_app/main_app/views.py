@@ -19,7 +19,9 @@ import os
 import pdb 
 import time 
 import pickle 
+import joblib
 # model = pickle.load(open('model/mlp_300_32.sav', 'rb'))
+model = joblib.load("model/mlp_32_joblib.sav")
 
 
 def home(request):
@@ -152,37 +154,34 @@ def check_fluency(request):
         with open('save/audio.mp3', 'wb+') as f:
             for chunk in audio.chunks():
                 f.write(chunk)
-        for i in range(30):
-            time.sleep(1)
-            print(i)
         predict_path = 'save/audio.mp3'
         features_predict = feature_out(predict_path)
-        # prediction = model.predict(features_predict)
+        prediction = model.predict(features_predict)
 
         print("\n\nThe Features is ",features_predict,"\n\n")
-        # ans = np.argmax(prediction[0]) + 1
-        # ans =int(ans)
-        # temp = UserAdditionalModel.objects.filter(userid=request.user.id)
-        # previous_fluency = None
-        # if temp != None:
-        #     previous_fluency = temp.first().fluency
+        ans = np.argmax(prediction[0]) + 1
+        ans =int(ans)
+        temp = UserAdditionalModel.objects.filter(userid=request.user.id)
+        previous_fluency = None
+        if temp != None:
+            previous_fluency = temp.first().fluency
             
-        # print(f'\n\nYour Previous fluency is {previous_fluency}')
-        # print("\n\nThe Fluency Level is ",ans,"\n\n")
-        # # UserAdditionalModel.objects.get(userid=request.user.id).update(fluency = ans)
-        # user_temp = UserAdditionalModel.objects.get(userid=request.user.id)
-        # user_temp.fluency = ans 
-        # user_temp.save()
+        print(f'\n\nYour Previous fluency is {previous_fluency}')
+        print("\n\nThe Fluency Level is ",ans,"\n\n")
+        # UserAdditionalModel.objects.get(userid=request.user.id).update(fluency = ans)
+        user_temp = UserAdditionalModel.objects.get(userid=request.user.id)
+        user_temp.fluency = ans 
+        user_temp.save()
 
         # prediction = "1"
 
-        return JsonResponse({'fluency': prediction})
+        return JsonResponse({'fluency': ans})
      
     user_fluency = UserAdditionalModel.objects.filter(userid=request.user.id).first().fluency
     random_paragraph = Paragraph.objects.order_by('?').first().paratext
     context = {}
     context["user_fluency"] = user_fluency
     context["paragraph"] = random_paragraph
-    return render(request, 'record_audio.html',context=context)
+    return render(request, 'fluencycheck.html',context=context)
 
 
