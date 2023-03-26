@@ -59,7 +59,7 @@ def update(request):
     # import pdb;pdb.set_trace()
     if request.method == 'POST':
         # updated_interest = steminize(request.POST['updated_interest'])
-        updated_interest = request.POST['interestsInput']
+        updated_interest = request.POST['interestsDropdown']
         print(updated_interest)
         UserAdditionalModel.objects.filter(userid=request.user).update(interest=updated_interest)
         Room.objects.filter(Q(user1=request.user) | Q(user2=request.user)).delete()

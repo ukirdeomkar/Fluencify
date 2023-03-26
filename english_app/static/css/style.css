@@ -32,14 +32,16 @@
 }
 
 .signup-showcase-container > p{
-    font-size: 50px;
+    font-size: 55px;
+    font-weight: bold;
 }
 
 .signup-form-container{
-    border: 1px solid lightgray;
-    border-radius: 5px;
+    /* border: 1px solid lightgray; */
+    /* border-radius: 5px; */
     padding: 20px;
-    background-color: white;
+    /* background-color: white; */
+    color : white
 }
 
 .login-form-container{
@@ -56,7 +58,7 @@
     align-items: center;
     margin-top: 5px;
     padding: 5px;
-    border: 1px solid #ced4da;
+    /* border: 1px solid #ced4da; */
     border-radius: 4px;
 }
 
@@ -141,5 +143,39 @@
     background-color: black;
 }
 
-.btn{
-}
+  .display-partner{
+    font-size: 30px;
+  }
+
+  .display-partner-info{
+    font-size: 50px;
+    font-style: italic;
+    font-weight:500;
+  }
+
+  .jumbotron{
+    background-color: black;
+    color: orange;
+  }
+
+  .ui-btn{
+    background-color: orange;
+  }
+
+  .ui-btn:hover{
+    background-color: darkorange;
+  }
+  
+  /* .video-background {
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+    width: 70%;
+  } */
+
+  .dropdown-menu {
+    max-height: 200px;
+    overflow-y: scroll;
+    position: absolute;
+    z-index: 9999;
+  }

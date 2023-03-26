@@ -1,20 +1,90 @@
 {% extends 'base.html' %}
 
+
+{% block title %}
+  Fluentify | Home
+{% endblock title %}
+
+
 {% block content %}
-    <div class="form-group">
-        <label for="interestsDropdown">Interests:</label>
-        <div class="dropdown">
-          <input type="text" class="form-control dropdown-toggle" id="interestsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" placeholder="Search interests...">
-          <div class="dropdown-menu" aria-labelledby="interestsDropdown">
-            {% for interest in interests %}
-              <a class="dropdown-item" href="#" data-value="{{interest}}">{{interest}}</a>
-            {% endfor %}
-          </div>
-        </div>
+<div class="container mt-5">
+  <h1 class="text-center mb-4">English Partner Finder</h1>
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="text-center mb-4">
+        <p class="lead">What would you like to do?</p>
       </div>
-      <div id="interestsContainer"></div>
+      <div class="text-center">
+        <a href="{% url 'findparthner' %}" class="btn btn-warning btn-lg btn-block mb-3">Find Partner</a>
+        <a type="button" class="btn btn-light btn-lg btn-block mb-3" data-toggle="modal" data-target="#updateInterestModal"> Update Interest </a>
+        <a href="{% url 'check_fluency' %}" class="btn btn-success btn-lg btn-block mb-3">Check Fluency</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateInterestModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Interest</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="update_interest_form" method="POST" action={% url 'update' %}>
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="interestsDropdown">Interests:</label>
+            <div class="dropdown">
+              <input type="text" class="form-control dropdown-toggle" id="interestsDropdown" name="interestsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" placeholder="Search interests...">
+              <div class="dropdown-menu" aria-labelledby="interestsDropdown">
+                {% for interest in interests %}
+                  <a class="dropdown-item" href="#" data-value="{{interest}}">{{interest}}</a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div id="interestsContainer">
+            {% if user1_interest|first %}
+              {% for interest in user1_interest%}
+              
+                <div class="interestsBox ">
+                  <span class="delete" onclick="deleteInterest(this)">{{interest}}</span>
+                </div>
+              {% endfor %}
+              {% endif %}
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn ui-btn" onclick="submitForm()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
       
       <script>
+
+        function submitForm() {
+          const interestTags = document.querySelectorAll('.interestsBox');
+      
+          const interestNames = [];
+          interestTags.forEach(tag => {
+            interestNames.push(tag.textContent.trim());
+          });
+          const interests = interestNames.join(',');
+      
+          document.getElementById('interestsDropdown').value = interests;
+          console.log(interests)
+          const interestForm = document.getElementById("update_interest_form")
+          console.log(interestForm)
+          interestForm.submit();
+        }
+
+        
         $(document).ready(function() {
           // Filter the list of interests based on the user's search query
           $('#interestsDropdown').on('input', function() {
@@ -32,12 +102,28 @@
             span.appendTo('#interestsContainer');
             $('#interestsDropdown').val('');
           });
-      
+
+          $('#interestsDropdown').on('keypress', function(event) {
+            if (event.which === 13) {
+              event.preventDefault();
+              var value = $(this).val().trim();
+              if (value !== '') {
+                var span = $('<span>').addClass('interestsBox');
+                $('<span>').addClass('delete').text(value).appendTo(span);
+                span.appendTo('#interestsContainer');
+                $(this).val('');
+              }
+            }
+          });
+          
           // Remove the selected interest from the interests container when the delete button is clicked
           $(document).on('click', '.delete', function() {
             $(this).closest('.interestsBox').remove();
           });
         });
+
+       
       </script>
       
-      {% endblock content %}
+      
+{% endblock content %}
