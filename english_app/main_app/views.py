@@ -12,12 +12,12 @@ from .models import Paragraph
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-# import numpy as np
-# import librosa
+import numpy as np
+import librosa
 import os
 import time 
-# import joblib 
-# import tensorflow as tf
+import joblib 
+import tensorflow as tf
 
 
 
@@ -54,7 +54,9 @@ def home(request):
 
 
 def roomdetails(request,room):
-    room_url = f'https://english-learn-meet-call.web.app/?id={room.room_id}'
+    # room_url = f'https://english-learn-meet-call.web.app/?id={room.room_id}'
+    room_url = f'https://videolink2me.com/#{room.room_id}'
+
 
     user1 = request.user
     user2 = room.user2 if room.user1 == user1 else room.user1
@@ -197,7 +199,7 @@ def findparthner(request):
 
 # Fluency++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# model = joblib.load("model/mlp_32_joblib.sav")
+model = joblib.load("model/mlp_32_joblib.sav")
 
 
 def feature_extraction(file_name):
@@ -232,7 +234,10 @@ def feature_out(predict_path):
 @csrf_protect
 def check_fluency(request):
     if request.method == 'POST':
-        
+        import pdb;pdb.set_trace()
+        # for i in range(20):
+        #     print(i)
+        #     time.sleep(1)
         audio = request.FILES['audio']
         with open('save/audio.mp3', 'wb+') as f:
             for chunk in audio.chunks():
@@ -256,7 +261,7 @@ def check_fluency(request):
         user_temp.fluency = ans 
         user_temp.save()
 
-        prediction = "1"
+        # prediction = "1"
 
         return JsonResponse({'fluency': ans})
      
