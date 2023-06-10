@@ -18,6 +18,9 @@ import os
 import time 
 import joblib 
 import tensorflow as tf
+import tempfile
+import sounddevice as sd
+import soundfile as sf
 
 
 
@@ -105,14 +108,23 @@ def matching(user1,exclude_users,same_fluency):
         user2_matched_percentage = (matched_interest_count/len(user2_interest_list))*100
         print(f"Matching with {user.userid.username} User 1 Matched {user1_matched_percentage}, \
               User 2 Matched {user2_matched_percentage}")
-        if user1_matched_percentage >= 50 and user2_matched_percentage >= 50:
+        
+        if user1_matched_percentage >= max_matched_percentage and user2_matched_percentage >= max_matched_percentage:
             max_matched_percentage = user1_matched_percentage
             user2 = user
             max_matched_interest = matched_interest
             if max_matched_percentage > 50:
                 break 
-
-    if user2 != None:
+        # if user1_matched_percentage >= 50 and user2_matched_percentage >= 50:
+        #     max_matched_percentage = user1_matched_percentage
+        #     user2 = user
+        #     max_matched_interest = matched_interest
+        #     if max_matched_percentage > 50:
+        #         break 
+    
+    # import pdb;pdb.set_trace()
+    # if user2 !    = None:
+    if max_matched_percentage > 1:
         common_interest = ','.join(max_matched_interest)
         ruser1 = User.objects.get(id=user1.userid.id)
         ruser2 = User.objects.get(id=user2.userid.id)
@@ -135,12 +147,12 @@ def findparthner(request):
         return roomdetails(request,room)
 
     user1 = UserAdditionalModel.objects.get(userid=current_user.id)
-    # user1_fluency = user1.fluency
-    # user1_interest_list = user1.interest.split(',')
+    user1_fluency = user1.fluency
+    user1_interest_list = user1.interest.split(',')
     # print(user1_interest_list)
 
     exclude_users = list(Room.objects.values_list('user1', flat=True)) + list(Room.objects.values_list('user2', flat=True))
-    # user_list = UserAdditionalModel.objects.filter(fluency=user1_fluency).exclude(userid__in=exclude_users).exclude(id=current_user.id)
+    user_list = UserAdditionalModel.objects.filter(fluency=user1_fluency).exclude(userid__in=exclude_users).exclude(id=current_user.id)
     # print(len(user_list))
 
 
@@ -202,10 +214,28 @@ def findparthner(request):
 model = joblib.load("model/mlp_32_joblib.sav")
 
 
+# def feature_extraction(file_name):
+#     import pdb;pdb.set_trace()
+#     #X, sample_rate = sf.read(file_name, dtype='float32')
+#     X , sample_rate = librosa.load(file_name, sr=None) 
+#     if X.ndim > 1:
+#         X = X[:,0]
+#     X = X.T
+    
+#     ## stFourier Transform
+#     stft = np.abs(librosa.stft(X))
+            
+#     mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=20).T, axis=0) 
+#     rmse = np.mean(librosa.feature.rms(y=X).T, axis=0) 
+#     spectral_flux = np.mean(librosa.onset.onset_strength(y=X, sr=sample_rate).T, axis=0) 
+#     zcr = np.mean(librosa.feature.zero_crossing_rate(y=X).T, axis=0)
+    
+#     return mfccs, rmse, spectral_flux, zcr
+
 def feature_extraction(file_name):
-    # pdb.set_trace()
-    #X, sample_rate = sf.read(file_name, dtype='float32')
-    X , sample_rate = librosa.load(file_name, sr=None) 
+    # import pdb;pdb.set_trace()
+    # X, sample_rate = sf.read(file_name, dtype='float32')
+    X , sample_rate = librosa.load(file_name, sr=None)
     if X.ndim > 1:
         X = X[:,0]
     X = X.T
@@ -221,8 +251,9 @@ def feature_extraction(file_name):
     return mfccs, rmse, spectral_flux, zcr
 
 
+
 def feature_out(predict_path):
-    # pdb.set_trace()
+    # import pdb;pdb.set_trace()
     n_mfccs = 20 
     number_of_features = 3 + n_mfccs
     features = np.empty((0,number_of_features))
@@ -231,18 +262,65 @@ def feature_out(predict_path):
     features_predict = np.vstack([features, extracted_features])
     return features_predict
 
+
+from django.core.files.storage import default_storage
+from pydub import AudioSegment
+
+
 @csrf_protect
 def check_fluency(request):
     if request.method == 'POST':
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         # for i in range(20):
         #     print(i)
         #     time.sleep(1)
-        audio = request.FILES['audio']
-        with open('save/audio.mp3', 'wb+') as f:
-            for chunk in audio.chunks():
+
+        audio_file = request.FILES["audio"]
+        with open("save/audio_record.mp3", "wb+") as f:
+            for chunk in audio_file.chunks():
                 f.write(chunk)
-        predict_path = 'save/audio.mp3'
+
+        
+
+
+
+        # audio_file = request.FILES['audio']
+        # file_name = default_storage.save(audio_file.name + ".webm", audio_file)
+        # file_url = default_storage.url(file_name)
+
+        # audio_file = request.FILES['audio']
+        # with open('save/audio5.mp3', 'wb+') as f:
+        #     for chunk in audio_file.chunks():
+        #         f.write(chunk)
+        # audio_file = request.FILES['audio']
+
+        # with tempfile.NamedTemporaryFile(delete=False) as temp:
+        #     for chunk in audio_file.chunks():
+        #         temp.write(chunk)
+        #     temp.flush()
+        #     os.fsync(temp.fileno())
+        #     audio_path = temp.name
+
+        #     # set the audio settings
+        #     fs = 44100  # sample rate
+        #     duration = 5  # recording duration in seconds
+
+        #     # read the audio data from the uploaded file
+        #     audio_data, audio_fs = sf.read(audio_path)
+
+        #     # write the audio data to a WAV file
+        #     wav_path = os.path.splitext(audio_path)[0] + '.wav'
+        #     sf.write(wav_path, audio_data, fs)
+
+
+        # webm_path = "media/blob.webm"
+        # mp3_path = "media/blob.mp3"
+        # webm_audio = AudioSegment.from_file(webm_path, format="webm")
+        # webm_audio.export(mp3_path, format="mp3")
+
+        predict_path = 'save/audio_record.mp3'
+        
+        
         features_predict = feature_out(predict_path)
         prediction = model.predict(features_predict)
 

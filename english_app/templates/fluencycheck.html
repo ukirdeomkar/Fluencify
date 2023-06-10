@@ -137,7 +137,7 @@
         });
         mediaRecorder.addEventListener("stop", () => {
           stopTimer();
-          const blob = new Blob(chunks, { type: "audio/webm" });
+          const blob = new Blob(chunks, { type: "audio/mp3" });
           console.log(blob);
           const audioURL = URL.createObjectURL(blob);
           audioElem.src = audioURL;
@@ -180,15 +180,18 @@
     fluencyResult.innerHTML = "Processing....";
     await wait(3000);
     const formData = new FormData();
-    const blob = new Blob(chunks, { type: "audio/webm" });
+    const audioBlob = new Blob(chunks, { type: "audio/mp3" });
 
-    formData.append("audio", blob);
+    formData.append('audio', audioBlob);
     console.log(getCookie("csrftoken"));
+    console.log(formData);
+
     // Send to backend
     fetch("/check_fluency", {
       method: "POST",
       body: formData,
-      headers: { "X-CSRFToken": getCookie("csrftoken") },
+      headers: { "X-CSRFToken": getCookie("csrftoken") , 
+                  },
     })
       .then((response) => response.json())
       .then((data) => {

@@ -80,12 +80,28 @@
           <div id="interestsContainer" class=""></div>
         </div>
 
-        <button type="submit" class="btn ui-btn">Submit</button>
+        <button type="submit" onclick="submitForm()"  class="btn ui-btn">Submit</button>
       </form>
     </div>
   </div>
 
   <script>
+
+function submitForm() {
+    const interestTags = document.querySelectorAll('.interestsBox');
+
+    const interestNames = [];
+    interestTags.forEach(tag => {
+      interestNames.push(tag.textContent.trim());
+    });
+    const interests = interestNames.join(',');
+    document.getElementById('interest').value = interests;
+    console.log(interests)
+    const interestForm = document.getElementById("signup-form")
+    console.log(interestForm)
+    interestForm.submit();
+  }
+
     const interestsInput = document.getElementById("interest");
     const interestsContainer = document.getElementById("interestsContainer");
 

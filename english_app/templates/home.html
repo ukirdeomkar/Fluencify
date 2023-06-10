@@ -38,7 +38,7 @@
           {% csrf_token %}
           <div class="form-group">
             <label for="interestsInput">Interests:</label>
-            <input type="text" class="form-control" id="interestsInput" name="interestsInput" placeholder="Type your interests and press Enter">
+            <input type="text" class="form-control" id="interestsInput" name="interestsInput" placeholder="Type your interests and press Enter" autocomplete="off">
             <div id="interestsContainer" class="border-0">
               {% if user1_interest|first %}
               {% for interest in user1_interest%}

@@ -78,14 +78,14 @@ WSGI_APPLICATION = 'english_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'englishdatabase',
-        'USER': 'root',
-        'PASSWORD': 'mysql',
-        'HOST':'localhost',
-        'PORT':'3306',
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'englishdatabase',
+        # 'USER': 'root',
+        # 'PASSWORD': 'password',
+        # 'HOST':'localhost',
+        # 'PORT':'3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -131,3 +131,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR , 'static')]
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+MEDIA_ROOT = 'media/'
+

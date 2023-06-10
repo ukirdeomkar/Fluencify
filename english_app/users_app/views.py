@@ -11,6 +11,7 @@ from django.db.models import Q
 
 def signup(request):
     if request.method == "POST":
+        import pdb;pdb.set_trace()
         data = request.POST
         name = data['name']
         username = data['username']
